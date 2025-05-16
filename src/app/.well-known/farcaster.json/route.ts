@@ -1,12 +1,22 @@
-import { NextResponse } from 'next/server';
-import { getFarcasterMetadata } from '../../../lib/utils';
-
 export async function GET() {
-  try {
-    const config = await getFarcasterMetadata();
-    return NextResponse.json(config);
-  } catch (error) {
-    console.error('Error generating metadata:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  const URL = process.env.NEXT_PUBLIC_URL;
+
+  return Response.json({
+    accountAssociation: {
+      header: process.env.FARCASTER_HEADER,
+      payload: process.env.FARCASTER_PAYLOAD,
+      signature: process.env.FARCASTER_SIGNATURE,
+    },
+    frame: {
+      version: process.env.NEXT_PUBLIC_VERSION,
+      name: process.env.NEXT_PUBLIC_FRAME_NAME,
+      homeUrl: URL,
+      iconUrl: process.env.NEXT_PUBLIC_ICON_URL,
+      imageUrl: process.env.NEXT_PUBLIC_IMAGE_URL,
+      buttonTitle: process.env.NEXT_PUBLIC_FRAME_BUTTON_TEXT,
+      splashImageUrl: process.env.NEXT_PUBLIC_SPLASH_IMAGE_URL,
+      splashBackgroundColor: `#${process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR}`,
+      webhookUrl: `${URL}/api/webhook`,
+    },
+  });
 }

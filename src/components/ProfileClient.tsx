@@ -217,28 +217,40 @@ export default function ProfileClient({username}: {username: string}) {
   };
   
   // Share to Farcaster using SDK
-  const shareToFarcaster = () => {
+  const shareToFarcaster = async () => {
     if (!userData) return;
     
+    // Create the message in the required format
+    const overallWorth = userData.developerWorth?.totalWorth || 0;
+    const shareText = `Looks like my @klyro score thinks I'm worth $${formatNumber(overallWorth)} based on my commits 😂\n\nCheck yours: `;
+    const profileUrl = `https://miniapp.klyro.dev/${username}`;
+    
     try {
-      // If Farcaster SDK is available (through MiniKit)
+      // If running in Farcaster client context
       if (context?.client) {
-        // Pass share text and URL to Farcaster's cast composer
-        window.parent.postMessage({
-          type: "miniapp:composeCast",
-          text: createShareMessage() + getShareUrl(),
-        }, "*");
+        try {
+          // Try to use the SDK postMessage method directly
+          window.parent.postMessage({
+            type: "miniapp:composeCast",
+            text: shareText,
+            embeds: [profileUrl],
+          }, "*");
+          
+          console.log("Cast compose message sent");
+        } catch (sdkError) {
+          console.error("Error with composeCast:", sdkError);
+        }
         
         // Close dialog after sharing
         setIsShareOpen(false);
       } else {
         // Fallback to normal URL sharing if not in Farcaster client
-        window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(createShareMessage())}&url=${encodeURIComponent(getShareUrl())}`, '_blank');
+        window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(profileUrl)}`, '_blank');
       }
     } catch (error) {
       console.error("Error sharing to Farcaster:", error);
-      // Fallback to normal URL share if SDK fails
-      window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(createShareMessage())}&url=${encodeURIComponent(getShareUrl())}`, '_blank');
+      // Fallback to normal URL share if any method fails
+      window.open(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(profileUrl)}`, '_blank');
     }
   };
   

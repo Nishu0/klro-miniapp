@@ -1,0 +1,65 @@
+import { Badge } from "./ui/badge"
+import { AnimatedGridPattern } from "./grid";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+import Link from "next/link"
+import { PartnerWithUs } from "./PartnerWithUs";
+
+
+export default function Header() {
+  return (
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Multiple layered backgrounds for depth */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808015_1px,transparent_1px),linear-gradient(to_bottom,#80808015_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:64px_64px]"></div>
+
+      {/* Animated grid pattern */}
+      <AnimatedGridPattern
+        numSquares={40}
+        maxOpacity={0.15}
+        duration={4}
+        repeatDelay={0.5}
+        className={cn(
+          "absolute inset-0 z-0",
+          "[mask-image:radial-gradient(900px_circle_at_center,white,transparent)]"
+        )}
+      />
+
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-0 opacity-70"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/80 z-0"></div>
+
+      {/* Hero content */}
+      <div className="container relative z-10 mx-auto flex flex-col items-center justify-center space-y-8 px-4 text-center max-w-4xl">
+        <Badge className="rounded-full border-zinc-800 bg-zinc-900/70 backdrop-blur-sm px-4 py-1 text-white">
+          Builders Directory
+        </Badge>
+
+        <div className="space-y-4">
+          <h1 className="font-serif text-3xl font-bold italic tracking-tight md:text-7xl lg:text-8xl text-white">Discover Talent backed by Proof of Work.</h1>
+        </div>
+
+        <p className="max-w-[600px] text-zinc-400 text-lg">
+          Find real builders through verifiable onchain and offchain moves, no resumes, no guestwork.
+        </p>
+
+        <div className="flex flex-wrap gap-4 justify-center pt-4">
+          <Link href="/create">
+            <Button className="rounded-full bg-white text-black hover:bg-zinc-200 px-8 py-6 text-lg font-medium">
+              Create Profile
+            </Button>
+          </Link>
+          <PartnerWithUs 
+            asLink={true}
+            variant="outline" 
+            className="rounded-full border-indigo-600 text-indigo-400 hover:bg-indigo-950/50 px-8 py-6 text-lg font-medium"
+          >
+            Partner as Community
+          </PartnerWithUs>
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+    </section>
+  );
+}

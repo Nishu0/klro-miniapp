@@ -1,90 +1,66 @@
-import {
-  ParseWebhookEvent,
-  parseWebhookEvent,
-  verifyAppKeyWithNeynar,
-} from "@farcaster/frame-node";
-import { NextRequest } from "next/server";
-import {
-  deleteUserNotificationDetails,
-  setUserNotificationDetails,
-} from "~/lib/kv";
-import { sendFrameNotification } from "~/lib/notifs";
+import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * Handle Farcaster webhook events
+ * This will be called when users add/remove the app or enable/disable notifications
+ */
 export async function POST(request: NextRequest) {
-  // If Neynar is enabled, we don't need to handle webhooks here
-  // as they will be handled by Neynar's webhook endpoint
-  const neynarEnabled = process.env.NEYNAR_API_KEY && process.env.NEYNAR_CLIENT_ID;
-  if (neynarEnabled) {
-    return Response.json({ success: true });
-  }
-
-  const requestJson = await request.json();
-
-  let data;
   try {
-    data = await parseWebhookEvent(requestJson, verifyAppKeyWithNeynar);
-  } catch (e: unknown) {
-    const error = e as ParseWebhookEvent.ErrorType;
-
-    switch (error.name) {
-      case "VerifyJsonFarcasterSignature.InvalidDataError":
-      case "VerifyJsonFarcasterSignature.InvalidEventDataError":
-        // The request data is invalid
-        return Response.json(
-          { success: false, error: error.message },
-          { status: 400 }
-        );
-      case "VerifyJsonFarcasterSignature.InvalidAppKeyError":
-        // The app key is invalid
-        return Response.json(
-          { success: false, error: error.message },
-          { status: 401 }
-        );
-      case "VerifyJsonFarcasterSignature.VerifyAppKeyError":
-        // Internal error verifying the app key (caller may want to try again)
-        return Response.json(
-          { success: false, error: error.message },
-          { status: 500 }
-        );
+    const body = await request.json();
+    
+    // Verify the request has the expected headers and payload
+    if (!body.header || !body.payload || !body.signature) {
+      console.error('Invalid webhook payload', body);
+      return NextResponse.json({ error: 'Invalid webhook payload' }, { status: 400 });
     }
+    
+    // Decode payload to get event info
+    const payloadStr = Buffer.from(body.payload, 'base64').toString();
+    const payload = JSON.parse(payloadStr);
+    console.log('Webhook event:', payload.event);
+    
+    // Process different event types
+    switch (payload.event) {
+      case 'frame_added':
+        // User added the frame and enabled notifications
+        console.log('User added frame and enabled notifications');
+        // Store the notification token for this user to send notifications later
+        if (payload.notificationDetails) {
+          // Here you would save the notification details to your database
+          console.log('Notification URL:', payload.notificationDetails.url);
+          console.log('Notification token:', payload.notificationDetails.token);
+        }
+        break;
+        
+      case 'frame_removed':
+        // User removed the frame
+        console.log('User removed frame');
+        // Remove notification tokens for this user
+        break;
+        
+      case 'notifications_enabled':
+        // User enabled notifications
+        console.log('User enabled notifications');
+        if (payload.notificationDetails) {
+          // Here you would save the notification details to your database
+          console.log('Notification URL:', payload.notificationDetails.url);
+          console.log('Notification token:', payload.notificationDetails.token);
+        }
+        break;
+        
+      case 'notifications_disabled':
+        // User disabled notifications
+        console.log('User disabled notifications');
+        // Mark notification tokens as inactive
+        break;
+        
+      default:
+        console.warn('Unknown event type:', payload.event);
+    }
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-
-  const fid = data.fid;
-  const event = data.event;
-
-  // Only handle notifications if Neynar is not enabled
-  // When Neynar is enabled, notifications are handled through their webhook
-  switch (event.event) {
-    case "frame_added":
-      if (event.notificationDetails) {
-        await setUserNotificationDetails(fid, event.notificationDetails);
-        await sendFrameNotification({
-          fid,
-          title: "Welcome to Frames v2",
-          body: "Frame is now added to your client",
-        });
-      } else {
-        await deleteUserNotificationDetails(fid);
-      }
-      break;
-
-    case "frame_removed":
-      await deleteUserNotificationDetails(fid);
-      break;
-
-    case "notifications_enabled":
-      await setUserNotificationDetails(fid, event.notificationDetails);
-      await sendFrameNotification({
-        fid,
-        title: "Ding ding ding",
-        body: "Notifications are now enabled",
-      });
-      break;
-
-    case "notifications_disabled":
-      await deleteUserNotificationDetails(fid);
-      break;
-  }
-
-  return Response.json({ success: true });
 }

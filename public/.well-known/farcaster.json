@@ -1,0 +1,26 @@
+{
+  "frame": {
+    "version": "1",
+    "name": "Klyro Profile",
+    "iconUrl": "https://miniapp.klyro.dev/logo.png",
+    "homeUrl": "https://miniapp.klyro.dev/",
+    "splashImageUrl": "https://miniapp.klyro.dev/splash.png",
+    "splashBackgroundColor": "#000000",
+    "subtitle": "Developer Profiles with Proof of Work",
+    "description": "Discover real builders through verifiable onchain and offchain contributions. No resumes, just proof of work.",
+    "primaryCategory": "social",
+    "tags": [
+      "developers",
+      "profiles",
+      "github",
+      "blockchain",
+      "proof-of-work"
+    ],
+    "heroImageUrl": "https://miniapp.klyro.dev/logo.png",
+    "tagline": "Discover talent backed by code",
+    "ogTitle": "Klyro - Developer Profiles",
+    "ogDescription": "Find real builders through verifiable onchain and offchain moves",
+    "ogImageUrl": "https://miniapp.klyro.dev/logo.png",
+    "webhookUrl": "https://miniapp.klyro.dev/api/webhook"
+  }
+} 

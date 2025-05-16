@@ -21,6 +21,11 @@
     "ogTitle": "Klyro - Developer Profiles",
     "ogDescription": "Find real builders through verifiable onchain and offchain moves",
     "ogImageUrl": "https://miniapp.klyro.dev/logo.png",
-    "webhookUrl": "https://miniapp.klyro.dev/api/webhook"
+    "webhookUrl": "https://miniapp.klyro.dev/api/webhook",
+    "accountAssociation": {
+    "header": "eyJmaWQiOjU1OTMzOSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDU1MWIwNDU1MzEyYjg0MjdiRDg2MmQ2NWE0ODZmNjhBRjQ0NzQ5RkIifQ",
+    "payload": "eyJkb21haW4iOiJtaW5pYXBwLmtseXJvLmRldiJ9",
+    "signature": "MHhkMWE4ODk3NzY1ZmEwMzdiMzkyMWJhZjc2MjY3ZWYxZWE3OGU0OGM1NTQ3NDRkZDRkMTRhYzExZjBjNTVmYWM2NGQ5MDMyZjc0ZWFlNjU3ODI1ZDcxZDNjNTE2OTU0ZDc0YzNiOTkzZTc4MDIzMzEyZWMxMmM3YWNlYzlmNTQzNTFj"
+  }
   }
 } 

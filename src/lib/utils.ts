@@ -123,7 +123,7 @@ export async function getFarcasterMetadata(): Promise<FrameManifest> {
     accountAssociation,
     frame: {
       version: "1",
-      name: APP_NAME ?? "Frames v2 Demo",
+      name: APP_NAME ?? "Klyro",
       iconUrl: APP_ICON_URL,
       homeUrl: APP_URL,
       imageUrl: APP_OG_IMAGE_URL,

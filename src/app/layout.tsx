@@ -7,6 +7,7 @@ import { APP_NAME, APP_DESCRIPTION } from "~/lib/constants";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MiniKitContextProvider } from "~/providers/MiniKitProvider";
 import { ThemeProvider } from "~/providers/theme-provider";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: APP_NAME,
@@ -37,7 +38,10 @@ export default async function RootLayout({
       >
         <ThemeProvider>
         <MiniKitContextProvider>
-          <Providers session={session}>{children}</Providers>
+          <Providers session={session}>
+            {children}
+            <Analytics />
+          </Providers>
         </MiniKitContextProvider>
         </ThemeProvider>
       </body>

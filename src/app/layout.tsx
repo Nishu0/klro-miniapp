@@ -6,6 +6,7 @@ import { Providers } from "~/app/providers";
 import { APP_NAME, APP_DESCRIPTION } from "~/lib/constants";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MiniKitContextProvider } from "~/providers/MiniKitProvider";
+import { ThemeProvider } from "~/providers/theme-provider";
 
 export const metadata: Metadata = {
   title: APP_NAME,
@@ -34,9 +35,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen dark`}
       >
+        <ThemeProvider>
         <MiniKitContextProvider>
           <Providers session={session}>{children}</Providers>
         </MiniKitContextProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -49,13 +49,6 @@ export default function Header() {
               Create Profile
             </Button>
           </Link>
-          <PartnerWithUs 
-            asLink={true}
-            variant="outline" 
-            className="rounded-full border-indigo-600 text-indigo-400 hover:bg-indigo-950/50 px-8 py-6 text-lg font-medium"
-          >
-            Partner as Community
-          </PartnerWithUs>
         </div>
       </div>
 
